@@ -32,8 +32,7 @@ public class KestrelThriftSpout extends BaseRichSpout {
     public static final int BATCH_SIZE = 4000;
 
 
-    private List<String> _hosts = null;
-    private int _port = -1;
+    private List<HostInfo> _hosts = null;
     private String _queueName = null;
     private SpoutOutputCollector _collector;
     private Scheme _scheme;
@@ -93,12 +92,14 @@ public class KestrelThriftSpout extends BaseRichSpout {
         }
     }
 
-    public KestrelThriftSpout(List<String> hosts, int port, String queueName, Scheme scheme) {
-        if(hosts.isEmpty()) {
+    public KestrelThriftSpout(List<String> hostnames, int port, String queueName, Scheme scheme) {
+        if(hostnames.isEmpty()) {
             throw new IllegalArgumentException("Must configure at least one host");
         }
-        _port = port;
-        _hosts = hosts;
+        _hosts = new ArrayList<HostInfo>();
+        for (String hostname : hostnames) {
+            _hosts.add(new HostInfo(hostname, port));
+        }
         _queueName = queueName;
         _scheme = scheme;
     }
@@ -111,8 +112,25 @@ public class KestrelThriftSpout extends BaseRichSpout {
         this(hostname, port, queueName, new RawScheme());
     }
 
-    public KestrelThriftSpout(List<String> hosts, int port, String queueName) {
-        this(hosts, port, queueName, new RawScheme());
+    public KestrelThriftSpout(List<String> hostnames, int port, String queueName) {
+        this(hostnames, port, queueName, new RawScheme());
+    }
+
+    public KestrelThriftSpout(List<String> hosts, String queueName, Scheme scheme) {
+        if(hosts.isEmpty()) {
+            throw new IllegalArgumentException("Must configure at least one host");
+        }
+        _hosts = new ArrayList<HostInfo>();
+        for (String host : hosts) {
+            String[] array = host.split(":");
+            _hosts.add(new HostInfo(array[0], Integer.valueOf(array[1])));
+        }
+        _queueName = queueName;
+        _scheme = scheme;
+    }
+
+    public KestrelThriftSpout(List<String> hosts, String queueName) {
+        this(hosts, queueName, new RawScheme());
     }
 
     public Fields getOutputFields() {
@@ -132,12 +150,12 @@ public class KestrelThriftSpout extends BaseRichSpout {
         int myIndex = context.getThisTaskIndex();
         int numHosts = _hosts.size();
         if(numTasks < numHosts) {
-            for(String host: _hosts) {
-                _kestrels.add(new KestrelClientInfo(host, _port));
+            for(HostInfo host: _hosts) {
+                _kestrels.add(new KestrelClientInfo(host.host, host.port));
             }
         } else {
-            String host = _hosts.get(myIndex % numHosts);
-            _kestrels.add(new KestrelClientInfo(host, _port));
+            HostInfo host = _hosts.get(myIndex % numHosts);
+            _kestrels.add(new KestrelClientInfo(host.host, host.port));
         }
     }
 
