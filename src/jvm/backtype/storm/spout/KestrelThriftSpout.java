@@ -41,6 +41,8 @@ public class KestrelThriftSpout extends BaseRichSpout {
     private int _emitIndex;
 
     private Queue<EmitItem> _emitBuffer = new LinkedList<EmitItem>();
+    
+    private boolean _immediateAck = false;
 
     private class EmitItem {
         public KestrelSourceId sourceId;
@@ -195,6 +197,11 @@ public class KestrelThriftSpout extends BaseRichSpout {
 
                 if (retItems != null) {
                     EmitItem emitItem = new EmitItem(retItems, new KestrelSourceId(index, item.get_id()));
+                    
+                    // If immediateAck Setting, Spout immediate confirm to Kestrel.
+                    if(this._immediateAck) {
+                    toAck.add(item.get_id());
+                    }
 
                     if(!_emitBuffer.offer(emitItem)) {
                         throw new RuntimeException("KestrelThriftSpout's Internal Buffer Enqeueue Failed.");
@@ -291,5 +298,13 @@ public class KestrelThriftSpout extends BaseRichSpout {
 
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declare(getOutputFields());
+    }
+
+    /**
+     * @param _immediateAck the _immediateAck to set
+     */
+    public void setImmediateAck(boolean _immediateAck)
+    {
+        this._immediateAck = _immediateAck;
     }
 }
