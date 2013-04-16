@@ -2,12 +2,15 @@
 <classpath>
 	<classpathentry excluding="src/jvm/" kind="src" path=""/>
 	<classpathentry kind="src" path="src/jvm"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/clojure-1.4.0.jar"/>
-	<classpathentry kind="lib" path="lib/storm-0.8.0.jar"/>
-	<classpathentry kind="lib" path="lib/libthrift7-0.7.0.jar"/>
-	<classpathentry kind="lib" path="lib/commons-lang-2.5.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-api-1.5.8.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.16.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

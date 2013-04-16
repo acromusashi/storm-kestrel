@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <name>storm-kestrel</name>
+    <groupId>storm</groupId>
+    <artifactId>storm-kestrel</artifactId>
+    <version>0.7.2-snap3</version>
+    <packaging>jar</packaging>
+
+    <!-- プロジェクトプロパティ -->
+    <properties>
+        <jdk.version>1.6</jdk.version>
+        <src.encoding>UTF-8</src.encoding>
+        <site.encoding>UTF-8</site.encoding>
+        <storm.version>0.8.2</storm.version>
+        <clojure.version>1.2.0</clojure.version>
+    </properties>
+
+    <!-- リポジトリ設定 -->
+    <repositories>
+        <repository>
+            <id>apache.org</id>
+            <name>Apache</name>
+            <url>https://repository.apache.org/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>clojars.org</id>
+            <name>Clojars</name>
+            <url>http://clojars.org/repo</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>storm</groupId>
+            <artifactId>storm</artifactId>
+            <version>${storm.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.clojure</groupId>
+            <artifactId>clojure</artifactId>
+            <version>${clojure.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.clojure</groupId>
+            <artifactId>clojure-contrib</artifactId>
+            <version>${clojure.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <sourceDirectory>src/jvm</sourceDirectory>
+        <testSourceDirectory>test/jvm</testSourceDirectory>
+        <resources>
+            <resource>
+                <directory>${basedir}/multilang</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass></mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.theoryinpractise</groupId>
+                <artifactId>clojure-maven-plugin</artifactId>
+                <version>1.3.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <sourceDirectories>
+                        <sourceDirectory>src/clj</sourceDirectory>
+                    </sourceDirectories>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
