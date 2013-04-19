@@ -43,6 +43,8 @@ public class KestrelThriftSpout extends BaseRichSpout {
     private Queue<EmitItem> _emitBuffer = new LinkedList<EmitItem>();
     
     private boolean _immediateAck = false;
+    
+    private int _tupleEmitInterval = 1;
 
     private class EmitItem {
         public KestrelSourceId sourceId;
@@ -240,10 +242,15 @@ public class KestrelThriftSpout extends BaseRichSpout {
 
         EmitItem item = _emitBuffer.poll();
         if(item != null) {
-            _collector.emit(item.tuple, item.sourceId);
-        } else {  // If buffer is still empty here, then every kestrel Q is also empty.
-            Utils.sleep(10);
-        }
+            if(this._immediateAck) {
+                _collector.emit(item.tuple);
+            } else {
+                _collector.emit(item.tuple, item.sourceId);
+            }
+        } 
+        
+        // Sleep Interval
+        Utils.sleep(this._tupleEmitInterval);
     }
 
     private void blacklist(KestrelClientInfo info, Throwable t) {
@@ -301,10 +308,18 @@ public class KestrelThriftSpout extends BaseRichSpout {
     }
 
     /**
-     * @param _immediateAck the _immediateAck to set
+     * @param immediateAck the immediateAck to set
      */
-    public void setImmediateAck(boolean _immediateAck)
+    public void setImmediateAck(boolean immediateAck)
     {
-        this._immediateAck = _immediateAck;
+        this._immediateAck = immediateAck;
+    }
+    
+    /**
+     * @param interval the interval to set
+     */
+    public void setTupleEmitInterval(int interval)
+    {
+        this._tupleEmitInterval = interval;
     }
 }
