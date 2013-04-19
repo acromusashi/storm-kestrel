@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <name>storm-kestrel</name>
+    <name>storm-kestrel_custom</name>
     <groupId>storm</groupId>
-    <artifactId>storm-kestrel</artifactId>
+    <artifactId>storm-kestrel_custom</artifactId>
     <version>0.7.2-snap3</version>
     <packaging>jar</packaging>
 
